@@ -111,10 +111,11 @@ public final class QueryUtils {
 
     private static String readFromStream(InputStream inputStream){
         StringBuilder output = new StringBuilder();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-        BufferedReader reader = new BufferedReader(inputStreamReader);
-
+        InputStreamReader inputStreamReader;
+        BufferedReader reader;
         try{
+            inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
             while(line!=null){
                 output.append(line);
@@ -123,22 +124,28 @@ public final class QueryUtils {
             return output.toString();
         }
         catch (IOException exception){
+            Log.d(TAG, exception.getMessage());
         }
-        return null;
+        catch (RuntimeException exception){
+            Log.d(TAG,"Runtime Exc");
+
+        }        return null;
     }
 
-    private static BitmapWithURL downloadImage(String urlString){
+    public static Bitmap downloadImage(String urlString){
 
+        //SAVE URL AGAINST IDS TO NOT DOWNLOAD AN IMAGE TWICE? AND WHERE TO KEEP IT?!
+        Log.d("LazyLoader", "Inside downloadImage");
         URL bitmapURL = createURL(urlString);
         InputStream inputStream = null;
         inputStream = makeHttpRequest(bitmapURL);
-
+        Log.d("Lazyloader", "inputStream:  "+inputStream + "");
         Log.d(TAG, "DownloadImageURL: " + bitmapURL + "Inputstream: " + inputStream);
 
         Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
 
-        BitmapWithURL bitmapWithURL = new BitmapWithURL(bitmapURL, bitmapImg);
-        return bitmapWithURL.getBitmapWithUrl();
+//        BitmapWithURL bitmapWithURL = new BitmapWithURL(bitmapURL, bitmapImg);
+        return bitmapImg;
         //return an object with url against bitmap.
     }
 
@@ -165,7 +172,7 @@ public final class QueryUtils {
                 ArrayList<String> authors = new ArrayList<>();
 
 
-                downloadImage(volumeInfo.optJSONObject("imageLinks").optString("thumbnail"));
+//                downloadImage(volumeInfo.optJSONObject("imageLinks").optString("thumbnail"));
 
                 try{
                     Log.d(TAG, "Thank you, next!");
@@ -187,7 +194,7 @@ public final class QueryUtils {
                         volumeInfo.optInt("ratingsCount"),
                         volumeInfo.optJSONObject("imageLinks").optString("thumbnail"),
                         accessInfo.optString("webReaderLink"),
-                        downloadImage(volumeInfo.optJSONObject("imageLinks").optString("thumbnail"))));
+                        volumeInfo.optJSONObject("imageLinks").optString("thumbnail")));
 
                 Log.d(TAG, "webreaderlink is this: " + accessInfo.optString("webReaderLink"));
             }

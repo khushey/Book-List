@@ -1,6 +1,9 @@
 package com.example.booklist;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,13 +15,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import java.util.List;
 
 public class BookListAdapter extends ArrayAdapter<BookAttributes> {
 
     private final static String TAG = "BookListAdapter";
+    private static final int LAZY_LOADER_ID = 1;
+    private ViewHolder holder;
+    private int pos;
     List<BookAttributes> bookAttList;
     Context context;
 
@@ -30,20 +40,48 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView==null)
+        pos = position;
+        if(convertView == null || convertView.getTag() == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_adapter_view, parent, false);
+            holder = new ViewHolder();
+            holder.titleView = (TextView) convertView.findViewById(R.id.title);
+            holder.authorsView = (TextView) convertView.findViewById(R.id.author);
+            holder.avgRatingView = (TextView) convertView.findViewById(R.id.rating);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView2);
 
-        TextView titleView = (TextView) convertView.findViewById(R.id.title);
-        TextView authorsView = (TextView) convertView.findViewById(R.id.author);
-        TextView avgRatingView = (TextView) convertView.findViewById(R.id.rating);
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView2);
+            convertView.setTag(holder);
+        }
+        else{
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-        titleView.setText(bookAttList.get(position).getTitle());
-        Log.d(TAG, titleView.getText()+"");
-        authorsView.setText(bookAttList.get(position).getAuthor());
-        imageView.setImageBitmap(bookAttList.get(position).getImage());
+        holder.imageView.setTag(position);
+
+//      bookAttList.get(position).getUrlString();
+        holder.titleView.setText(bookAttList.get(position).getTitle());
+        holder.authorsView.setText(bookAttList.get(position).getAuthor());
+
+        Log.d(TAG,"Position: " + position + " Title: " + bookAttList.get(position).getAuthor());
+//      Log.d(TAG, "vertical scroll bar pos of imageView: " + holder.imageView.getVerticalScrollbarPosition());
+
+        if(holder.imageView!=null){
+            Log.d(TAG, "imageView tag: " + holder.imageView.getTag());
+            new LazyLoader(holder.imageView, bookAttList.get(position).getUrlString(), position).execute();
+        }
+
+//      holder.imageView.setImageBitmap(bookAttList.get(position).getImage());
+//      imageView. set: a placehodler drawable while the image downloads.
 
 //        avgRatingView.setText(bookAttList.get(position).getAvgRating().toString());
         return convertView;
     }
+
+    static class ViewHolder{
+        TextView titleView;
+        TextView authorsView;
+        TextView avgRatingView;
+        ImageView imageView;
+    }
+
+
 }

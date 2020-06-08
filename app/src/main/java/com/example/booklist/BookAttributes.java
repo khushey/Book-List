@@ -12,12 +12,14 @@ public class BookAttributes {
     private double avgRating;
     private int ratingsCount;
     private String webReaderLink;
-    private BitmapWithURL bitmapWithURL;
+    private String imageUrl;
+
+//    private BitmapWithURL bitmapWithURL;
     //creaate an arraylist inside, of a class object that has bitmap against url.
     //the url part is updated with extractbooks.
 
     public BookAttributes(String title, ArrayList<String> authors, String description, double avgRating,
-                          int ratingsCount, String thumbnail, String webReaderLink, BitmapWithURL bitmapWithURL){
+                          int ratingsCount, String thumbnail, String webReaderLink, String imageUrl){
         this.title = title;
         this.authors = authors;
         this.description = description;
@@ -27,16 +29,17 @@ public class BookAttributes {
         this.avgRating = avgRating;
         this.ratingsCount = ratingsCount;
         this.webReaderLink = webReaderLink;
-        this.bitmapWithURL = bitmapWithURL;
+        this.imageUrl = imageUrl;
+//        this.bitmapWithURL = bitmapWithURL;
     }
 
     public String getTitle(){
         return title;
     }
 
-    public Bitmap getImage(){
-        return bitmapWithURL.getBitmapWithUrl().getBitmap();
-    }
+//    public Bitmap getImage(){
+//        return bitmapWithURL.getBitmapWithUrl().getBitmap();
+//    }
 
     public String getAuthor(){
         StringBuilder authorList = new StringBuilder();
@@ -53,8 +56,12 @@ public class BookAttributes {
         return description;
     }
 
-    public URL getUrl(){
-        return QueryUtils.createURL(thumbnail);
+//    public URL getUrl(){
+//        return QueryUtils.createURL(thumbnail);
+//    }
+
+    public String getUrlString(){
+        return imageUrl;
     }
 
     public double getAvgRating(){

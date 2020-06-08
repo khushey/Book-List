@@ -31,11 +31,9 @@ public class BookLoader extends AsyncTaskLoader {
     @Override
     public ArrayList<BookAttributes> loadInBackground() {
         jsonResponse = QueryUtils.getJsonResponse(url);
-        Log.d(TAG, jsonResponse);
         bookList = QueryUtils.extractBooks(jsonResponse);
 
-        //whenbooklist is empy, return null.
+        //NULL OBJET EXCEPTION FOR WHENEVER QUERY YIELDS NO RESULTS.
         return bookList;
-
     }
 }

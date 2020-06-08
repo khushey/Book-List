@@ -32,6 +32,28 @@ public class MainActivity extends AppCompatActivity {
         createUrl();//Async: listener
     }
 
+//    //imageLoader
+//    //called inside onLoadFinished
+//    LoaderManager.LoaderCallbacks imageLoaderCallback = new LoaderManager.LoaderCallbacks<LazyLoader>() {
+//        @NonNull
+//        @Override
+//        public Loader onCreateLoader(int id, @Nullable Bundle args) {
+//            return null;
+//        }
+//
+//        @Override
+//        public void onLoadFinished(@NonNull Loader<LazyLoader> loader, Object<LazyLoader> data) {
+//
+//        }
+//
+//        @Override
+//        public void onLoaderReset(@NonNull Loader loader) {
+//
+//        }
+//    };
+
+
+    //dataLoader
     LoaderManager.LoaderCallbacks loaderCallbacks = new LoaderManager.LoaderCallbacks<List<BookAttributes>>()
     {
         @NonNull
@@ -52,17 +74,14 @@ public class MainActivity extends AppCompatActivity {
                 listView.setAdapter(arrayAdapter);
                 LoaderManager.getInstance(MainActivity.this).destroyLoader(BOOK_LOADER_ID);
             }
-            catch (NullPointerException e){
-
+            catch (NullPointerException exception){
 
             }
         }
 
         @Override
         public void onLoaderReset(@NonNull Loader loader) {
-//            Log.d(TAG, "When to I get here?");
 //            bookLoader.reset();
-            //figure this out.
         }
     };
 
@@ -81,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onQueryTextSubmit(String query) {
             url = QueryUtils.buildQuery(query);
+//            url = QueryUtils.buildQuery("https://www.googleapis.com/books/v1/volumes?q=pride&maxResults=3");
+//            url =
             Log.d(TAG, "onQueryListener: "+url);
 
             if(url!=null){
