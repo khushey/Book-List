@@ -99,8 +99,7 @@ public final class QueryUtils {
 
                 inputStream = connection.getInputStream();
                 Log.d(TAG, "makeHTTPRequest: " + inputStream);
-//                connection.disconnect();//CHECK CHECK CHECK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-//                Log.d(TAG, jsonResponse);
+
                 return inputStream;
             }
             catch (IOException exception){
