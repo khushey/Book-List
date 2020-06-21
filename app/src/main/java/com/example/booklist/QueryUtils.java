@@ -11,9 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,6 +35,26 @@ public final class QueryUtils {
         return url;
     }
 
+    //to be understood
+    public static void copyStream(InputStream inputStream, OutputStream outputStream){
+        final int bufferSize = 1024;
+        byte[] byteArray = new byte[bufferSize];
+
+        try{
+
+            for(;;){
+                //Read byte from input stream
+                int count = inputStream.read(byteArray, 0, bufferSize);
+                if (count == -1)
+                    break;
+
+                outputStream.write(byteArray, 0, count);
+            }
+        }
+        catch (IOException exception){
+            exception.printStackTrace();
+        }
+    }
     public static URL createURL (String urlString){
         URL url = null;
         try {
@@ -53,31 +77,6 @@ public final class QueryUtils {
         return urlBuilder;
     }
 
-//    public static String makeHttpRequest(URL url){
-//        HttpURLConnection connection;
-//        InputStream inputStream = null;
-//        String jsonResponse;
-//        try{
-//            connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.setConnectTimeout(10000);
-//            connection.setReadTimeout(10000);
-//            connection.connect();
-//
-//            inputStream = connection.getInputStream();
-//
-//            jsonResponse = readFromStream(inputStream);
-//
-//            Log.d(TAG, jsonResponse);
-//            return jsonResponse;
-//        }
-//        catch (IOException exception){
-//
-//        }
-//        return  null;
-//    }
-
-
 
     public static String getJsonResponse(URL url){
         InputStream inputStream = null;
@@ -87,7 +86,7 @@ public final class QueryUtils {
         return jsonResponse;
         }
 
-        public static InputStream makeHttpRequest(URL url){
+    public static InputStream makeHttpRequest(URL url){
             HttpURLConnection connection;
             InputStream inputStream = null;
             String jsonResponse;
@@ -100,6 +99,7 @@ public final class QueryUtils {
 
                 inputStream = connection.getInputStream();
                 Log.d(TAG, "makeHTTPRequest: " + inputStream);
+//                connection.disconnect();//CHECK CHECK CHECK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 //                Log.d(TAG, jsonResponse);
                 return inputStream;
             }
@@ -132,21 +132,27 @@ public final class QueryUtils {
         }        return null;
     }
 
-    public static Bitmap downloadImage(String urlString){
+    public static Bitmap downloadImage(String urlString, File file){
 
-        //SAVE URL AGAINST IDS TO NOT DOWNLOAD AN IMAGE TWICE? AND WHERE TO KEEP IT?!
-        Log.d("LazyLoader", "Inside downloadImage");
         URL bitmapURL = createURL(urlString);
         InputStream inputStream = null;
         inputStream = makeHttpRequest(bitmapURL);
-        Log.d("Lazyloader", "inputStream:  "+inputStream + "");
-        Log.d(TAG, "DownloadImageURL: " + bitmapURL + "Inputstream: " + inputStream);
 
-        Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
+        try {
+            OutputStream outputStream = new FileOutputStream(file);
+            copyStream(inputStream, outputStream);
+            outputStream.close();
+            Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
+            return bitmapImg;
 
-//        BitmapWithURL bitmapWithURL = new BitmapWithURL(bitmapURL, bitmapImg);
-        return bitmapImg;
-        //return an object with url against bitmap.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public static ArrayList<BookAttributes> extractBooks(String jsonString){

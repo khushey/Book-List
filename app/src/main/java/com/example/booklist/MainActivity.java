@@ -32,25 +32,7 @@ public class MainActivity extends AppCompatActivity {
         createUrl();//Async: listener
     }
 
-//    //imageLoader
-//    //called inside onLoadFinished
-//    LoaderManager.LoaderCallbacks imageLoaderCallback = new LoaderManager.LoaderCallbacks<LazyLoader>() {
-//        @NonNull
-//        @Override
-//        public Loader onCreateLoader(int id, @Nullable Bundle args) {
-//            return null;
-//        }
-//
-//        @Override
-//        public void onLoadFinished(@NonNull Loader<LazyLoader> loader, Object<LazyLoader> data) {
-//
-//        }
-//
-//        @Override
-//        public void onLoaderReset(@NonNull Loader loader) {
-//
-//        }
-//    };
+
 
 
     //dataLoader

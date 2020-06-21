@@ -29,6 +29,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
     private static final int LAZY_LOADER_ID = 1;
     private ViewHolder holder;
     private int pos;
+    ImageLoader imageLoader;
     List<BookAttributes> bookAttList;
     Context context;
 
@@ -36,6 +37,8 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         super(context, 0, objects);
         this.context = context;
         this.bookAttList = objects;
+        imageLoader = new ImageLoader(context);
+
     }
 
     @Override
@@ -61,18 +64,9 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         holder.titleView.setText(bookAttList.get(position).getTitle());
         holder.authorsView.setText(bookAttList.get(position).getAuthor());
 
-        Log.d(TAG,"Position: " + position + " Title: " + bookAttList.get(position).getAuthor());
-//      Log.d(TAG, "vertical scroll bar pos of imageView: " + holder.imageView.getVerticalScrollbarPosition());
+        Log.d(TAG, bookAttList.get(position).getTitle());
+        imageLoader.displayImage(bookAttList.get(position).getUrlString(), holder.imageView);
 
-        if(holder.imageView!=null){
-            Log.d(TAG, "imageView tag: " + holder.imageView.getTag());
-            new LazyLoader(holder.imageView, bookAttList.get(position).getUrlString(), position).execute();
-        }
-
-//      holder.imageView.setImageBitmap(bookAttList.get(position).getImage());
-//      imageView. set: a placehodler drawable while the image downloads.
-
-//        avgRatingView.setText(bookAttList.get(position).getAvgRating().toString());
         return convertView;
     }
 

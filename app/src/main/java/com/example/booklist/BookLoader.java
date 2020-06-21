@@ -33,7 +33,6 @@ public class BookLoader extends AsyncTaskLoader {
         jsonResponse = QueryUtils.getJsonResponse(url);
         bookList = QueryUtils.extractBooks(jsonResponse);
 
-        //NULL OBJET EXCEPTION FOR WHENEVER QUERY YIELDS NO RESULTS.
         return bookList;
     }
 }
