@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public final class QueryUtils {
 //    private URL url = null;
 
     public static URL buildQuery(String query){
-        StringBuilder urlBuilder = new StringBuilder("https://www.googleapis.com/books/v1/volumes?q=");
+        StringBuilder urlBuilder = new StringBuilder("https://www.googleapis.com/books/v1/volumes?maxResults=10&q=");
         urlBuilder = removeWhiteSpace(urlBuilder.length(), urlBuilder.append(query));
         URL url = createURL(urlBuilder.toString());
         return url;
@@ -98,7 +99,6 @@ public final class QueryUtils {
                 connection.connect();
 
                 inputStream = connection.getInputStream();
-                Log.d(TAG, "makeHTTPRequest: " + inputStream);
 
                 return inputStream;
             }
@@ -136,12 +136,23 @@ public final class QueryUtils {
         URL bitmapURL = createURL(urlString);
         InputStream inputStream = null;
         inputStream = makeHttpRequest(bitmapURL);
-
+        if(inputStream!=null)
+            Log.d("ImageLoader", "input stream is not null");
         try {
             OutputStream outputStream = new FileOutputStream(file);
             copyStream(inputStream, outputStream);
             outputStream.close();
-            Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+//            Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
+            Bitmap bitmapImg = BitmapFactory.decodeStream(fileInputStream);
+
+            Log.d("ImageLoader", "input stream: "+inputStream + "");
+            Log.d("ImageLoader", "1A: Done downloading");
+
+            if(bitmapImg == null)
+            Log.d("ImageLoader", "1B: Image is null" );
+
             return bitmapImg;
 
         } catch (FileNotFoundException e) {

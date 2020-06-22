@@ -36,6 +36,7 @@ public class MemoryCache {
         try{
             if(!cache.containsKey(idURL))
                 return null;
+            Log.d("ImageLoader" , "memorycacheget: we have image's row bytes: "  + cache.get(idURL).getRowBytes());
             return cache.get(idURL);
         }
         catch (NullPointerException exception){

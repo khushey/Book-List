@@ -65,7 +65,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         holder.authorsView.setText(bookAttList.get(position).getAuthor());
 
         Log.d(TAG, bookAttList.get(position).getTitle());
-        imageLoader.displayImage(bookAttList.get(position).getUrlString(), holder.imageView);
+        imageLoader.displayImage(bookAttList.get(position).getUrlString(), holder.imageView, bookAttList.get(position).getTitle());
 
         return convertView;
     }

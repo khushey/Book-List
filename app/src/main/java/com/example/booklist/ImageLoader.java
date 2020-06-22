@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -19,7 +20,12 @@ public class ImageLoader {
     FileCache fileCache; //create directory / image file
     MemoryCache memoryCache = new MemoryCache(); //create a hashmap of URL against bitmap, to save a limited number of images
 
+//    String title;
+    TextDrawable myText;
+
     ExecutorService executorService;
+
+    private static final String TAG = "ImageLoader";
     //Maximum size of imageViewStringMap = num of times convertView in BookListAdapter was not null
 
     //this makes sure previous photos queued for download are not getting downloaded if the user has scrolled away.
@@ -35,8 +41,9 @@ public class ImageLoader {
         executorService = Executors.newFixedThreadPool(5);
     }
 
-    public void displayImage(String keyURL, ImageView imageView){
+    public void displayImage(String keyURL, ImageView imageView, String title){
         //map URL again imageView.
+        myText = new TextDrawable(title);
         imageViewStringMap.put(imageView, keyURL);
 
         //See if the bitmap to this image has already been downloaded and stored in cache
@@ -46,9 +53,8 @@ public class ImageLoader {
             imageView.setImageBitmap(bitmap);
         }
         else{
-            //
-//            PhotoToLoad photoToLoad = new PhotoToLoad(keyURL, imageView);
             queuePhoto(keyURL, imageView);
+            imageView.setImageDrawable(myText);
         }
     }
 
@@ -80,11 +86,14 @@ public class ImageLoader {
             else
             {
                 bitmap = getBitmap(photoToLoad.url);
+                Log.d(TAG, "3. Back to business after image has downloaded");
+//
                 memoryCache.put(photoToLoad.url, bitmap);
-
-                if(imageViewReused(photoToLoad))
+//
+                if(imageViewReused(photoToLoad)){
+                    Log.d(TAG, "3a. Return: imageview reused");
                     return;
-
+                }
                 BitmapDisplayer bitmapDisplayer = new BitmapDisplayer(bitmap, photoToLoad);
                 handler.post(bitmapDisplayer);
             }
@@ -94,6 +103,7 @@ public class ImageLoader {
     private Bitmap getBitmap(String keyURL){
 
         File file = fileCache.getFile(keyURL);
+        Log.d(TAG, "file: " + file.isDirectory());
         //DO SEE WHAT IS GOT HERE. IN CASE OF EMPTY. OR WHATVER.!
 
         try {
@@ -137,13 +147,20 @@ public class ImageLoader {
 
         @Override
         public void run(){
+            Log.d(TAG, "4. Displaying image");
             if(imageViewReused(photoToLoad))
                 return;
             if(bitmap!=null)
-                if(bitmap!=null)
-                    photoToLoad.imageView.setImageBitmap(bitmap);
-//                else
-//                    photoToLoad.imageView.setImageResource(stubInt);
+//                if(bitmap!=null)
+            {
+                Log.d(TAG, "5a. Image is not null");
+                photoToLoad.imageView.setImageBitmap(bitmap);
+            }
+                else
+            {
+                Log.d(TAG, "5b. Image is null");
+                photoToLoad.imageView.setImageDrawable(myText);
+            }
         }
     }
 

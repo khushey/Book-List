@@ -15,8 +15,6 @@ public class FileCache {
     private static final String TAG = "FileCache";
 
     public FileCache(Context context){
-        //WHY IS CONTEXT NEEDED HERE?!?!?!
-
         //Find the directory at SD Card to save cached images
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             //if SDCard is present on device and mounted
