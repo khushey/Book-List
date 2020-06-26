@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BookLoader bookLoader;
     private static final int BOOK_LOADER_ID = 0;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivityx";
     private URL url = null;
     private SearchView searchView;
 
@@ -31,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         createUrl();//Async: listener
     }
-
-
-
 
     //dataLoader
     LoaderManager.LoaderCallbacks loaderCallbacks = new LoaderManager.LoaderCallbacks<List<BookAttributes>>()
@@ -67,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //    BookLoader.toCreateUrl mToCreateUrl = new BookLoader.toCreateUrl() {
-//        @Override
         public void createUrl() {
             //Load activity and get query text to build URL at onStartLoading() in the BookLoader
             //object.
@@ -82,12 +77,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onQueryTextSubmit(String query) {
             url = QueryUtils.buildQuery(query);
-//            url = QueryUtils.buildQuery("https://www.googleapis.com/books/v1/volumes?q=pride&maxResults=3");
-//            url =
-            Log.d(TAG, "onQueryListener: "+url);
-
             if(url!=null){
-                Log.d(TAG, "Will call loader Manager.");
                 searchView.clearFocus();
                 LoaderManager.getInstance(MainActivity.this)
                         .initLoader(BOOK_LOADER_ID, null, loaderCallbacks).forceLoad();
@@ -101,4 +91,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FileCache fileCache = new FileCache(this);
+        fileCache.clear();
+    }
 }

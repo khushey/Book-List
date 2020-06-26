@@ -22,7 +22,6 @@ public class ImageLoader {
 
 //    String title;
     TextDrawable myText;
-
     ExecutorService executorService;
 
     private static final String TAG = "ImageLoader";
@@ -79,21 +78,18 @@ public class ImageLoader {
 
         @Override
         public void run() {
-
             //return if imageView has replaced: url has changed
             if (imageViewReused(photoToLoad))
                 return;
             else
             {
                 bitmap = getBitmap(photoToLoad.url);
-                Log.d(TAG, "3. Back to business after image has downloaded");
-//
                 memoryCache.put(photoToLoad.url, bitmap);
-//
+
                 if(imageViewReused(photoToLoad)){
-                    Log.d(TAG, "3a. Return: imageview reused");
                     return;
                 }
+
                 BitmapDisplayer bitmapDisplayer = new BitmapDisplayer(bitmap, photoToLoad);
                 handler.post(bitmapDisplayer);
             }
@@ -103,7 +99,6 @@ public class ImageLoader {
     private Bitmap getBitmap(String keyURL){
 
         File file = fileCache.getFile(keyURL);
-        Log.d(TAG, "file: " + file.isDirectory());
         //DO SEE WHAT IS GOT HERE. IN CASE OF EMPTY. OR WHATVER.!
 
         try {
@@ -147,18 +142,14 @@ public class ImageLoader {
 
         @Override
         public void run(){
-            Log.d(TAG, "4. Displaying image");
             if(imageViewReused(photoToLoad))
                 return;
             if(bitmap!=null)
-//                if(bitmap!=null)
             {
-                Log.d(TAG, "5a. Image is not null");
                 photoToLoad.imageView.setImageBitmap(bitmap);
             }
                 else
             {
-                Log.d(TAG, "5b. Image is null");
                 photoToLoad.imageView.setImageDrawable(myText);
             }
         }

@@ -2,6 +2,7 @@ package com.example.booklist;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,6 +30,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
     private static final int LAZY_LOADER_ID = 1;
     private ViewHolder holder;
     private int pos;
+    private TextDrawable mTextDrawable;
     ImageLoader imageLoader;
     List<BookAttributes> bookAttList;
     Context context;
@@ -46,6 +48,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         pos = position;
         if(convertView == null || convertView.getTag() == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_adapter_view, parent, false);
+
             holder = new ViewHolder();
             holder.titleView = (TextView) convertView.findViewById(R.id.title);
             holder.authorsView = (TextView) convertView.findViewById(R.id.author);
@@ -59,13 +62,16 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         }
 
         holder.imageView.setTag(position);
+        mTextDrawable = new TextDrawable(bookAttList.get(position).getTitle());
 
-//      bookAttList.get(position).getUrlString();
+        Rect bounds = new Rect();
+        Log.d("chuchu", holder.titleView.getWidth() + "  " +
+                holder.titleView.getPaint().measureText(bookAttList.get(position).getTitle()) );
         holder.titleView.setText(bookAttList.get(position).getTitle());
         holder.authorsView.setText(bookAttList.get(position).getAuthor());
 
-        Log.d(TAG, bookAttList.get(position).getTitle());
-        imageLoader.displayImage(bookAttList.get(position).getUrlString(), holder.imageView, bookAttList.get(position).getTitle());
+        imageLoader.displayImage(bookAttList.get(position).getUrlString(),
+                holder.imageView, bookAttList.get(position).getTitle());
 
         return convertView;
     }

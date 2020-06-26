@@ -47,9 +47,11 @@ public class FileCache {
 
     public void clear(){
         File[] files = cacheDir.listFiles();
+        Log.d("MainActivityx", "In files");
         if(files == null)
             return;
         for(File f: files) {
+            Log.d("MainActivityx", "Deldeldel");
             f.delete();
         }
     }

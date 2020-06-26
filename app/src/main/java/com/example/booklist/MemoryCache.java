@@ -63,8 +63,6 @@ public class MemoryCache {
 
     //CHANGED CODE. CHECK.
     private void checkSize(){
-        Log.i(TAG, "Cache size = " + size + " length = " + cache.size());
-
         Iterator<Map.Entry<String, Bitmap>> iterator =
                 cache.entrySet().iterator();
 

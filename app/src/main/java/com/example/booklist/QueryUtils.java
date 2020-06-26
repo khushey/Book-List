@@ -99,7 +99,7 @@ public final class QueryUtils {
                 connection.connect();
 
                 inputStream = connection.getInputStream();
-
+                Log.d(TAG, "inputstream =  " + inputStream);
                 return inputStream;
             }
             catch (IOException exception){
