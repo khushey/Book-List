@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class BookLoader extends AsyncTaskLoader {
+
     private static final String TAG = "BookLoader";
     private Context context;
     private String jsonResponse;
@@ -32,7 +33,6 @@ public class BookLoader extends AsyncTaskLoader {
     public ArrayList<BookAttributes> loadInBackground() {
         jsonResponse = QueryUtils.getJsonResponse(url);
         bookList = QueryUtils.extractBooks(jsonResponse);
-
         return bookList;
     }
 }

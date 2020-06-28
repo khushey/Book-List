@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -39,28 +42,34 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Loader onCreateLoader(int id, @Nullable Bundle args) {
             bookLoader = new BookLoader(MainActivity.this, url);
-            Log.d(TAG, "BookLoader");
             return bookLoader;
         }
 
         @Override
-        public void onLoadFinished(@NonNull Loader<List<BookAttributes>> loader, List<BookAttributes> data) {
+        public void onLoadFinished(@NonNull Loader<List<BookAttributes>> loader, final List<BookAttributes> data) {
             //if the data is null, tell the user their query sucked adn they could please rephrase it.
             try{
-                Log.d(TAG, "Adapter");
-                ArrayAdapter arrayAdapter = new BookListAdapter(MainActivity.this, data);
-                ListView listView = (ListView) findViewById(R.id.listview);
-                listView.setAdapter(arrayAdapter);
-                LoaderManager.getInstance(MainActivity.this).destroyLoader(BOOK_LOADER_ID);
+                    ArrayAdapter arrayAdapter = new BookListAdapter(MainActivity.this, data);
+                    ListView listView = (ListView) findViewById(R.id.listview);
+                    listView.setAdapter(arrayAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(MainActivity.this, BookListActivity.class);
+                            intent.putExtra("readerLink", data.get(position).getWebReaderLink());
+                            intent.putExtra("desc", data.get(position).getDescription());
+                            startActivity(intent);
+                        }
+                    });
+                    LoaderManager.getInstance(MainActivity.this).destroyLoader(BOOK_LOADER_ID);
             }
             catch (NullPointerException exception){
-
+                Log.d(TAG, "NullPointer exception");
             }
         }
 
         @Override
         public void onLoaderReset(@NonNull Loader loader) {
-//            bookLoader.reset();
         }
     };
 

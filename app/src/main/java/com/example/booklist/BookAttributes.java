@@ -30,16 +30,11 @@ public class BookAttributes {
         this.ratingsCount = ratingsCount;
         this.webReaderLink = webReaderLink;
         this.imageUrl = imageUrl;
-//        this.bitmapWithURL = bitmapWithURL;
     }
 
     public String getTitle(){
         return title;
     }
-
-//    public Bitmap getImage(){
-//        return bitmapWithURL.getBitmapWithUrl().getBitmap();
-//    }
 
     public String getAuthor(){
         StringBuilder authorList = new StringBuilder();
@@ -60,6 +55,9 @@ public class BookAttributes {
 //        return QueryUtils.createURL(thumbnail);
 //    }
 
+    public String getWebReaderLink(){
+        return webReaderLink;
+    }
     public String getUrlString(){
         return imageUrl;
     }

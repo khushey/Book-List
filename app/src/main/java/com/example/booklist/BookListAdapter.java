@@ -14,6 +14,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
     private static final int LAZY_LOADER_ID = 1;
     private ViewHolder holder;
     private int pos;
-    private TextDrawable mTextDrawable;
+    private TextDrawable textDrawable;
     ImageLoader imageLoader;
     List<BookAttributes> bookAttList;
     Context context;
@@ -40,7 +41,6 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         this.context = context;
         this.bookAttList = objects;
         imageLoader = new ImageLoader(context);
-
     }
 
     @Override
@@ -52,7 +52,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
             holder = new ViewHolder();
             holder.titleView = (TextView) convertView.findViewById(R.id.title);
             holder.authorsView = (TextView) convertView.findViewById(R.id.author);
-            holder.avgRatingView = (TextView) convertView.findViewById(R.id.rating);
+            holder.avgRatingView = (RatingBar) convertView.findViewById(R.id.rating);
             holder.imageView = (ImageView) convertView.findViewById(R.id.imageView2);
 
             convertView.setTag(holder);
@@ -60,28 +60,26 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         else{
             holder = (ViewHolder) convertView.getTag();
         }
-
         holder.imageView.setTag(position);
-        mTextDrawable = new TextDrawable(bookAttList.get(position).getTitle());
-
-        Rect bounds = new Rect();
-        Log.d("chuchu", holder.titleView.getWidth() + "  " +
-                holder.titleView.getPaint().measureText(bookAttList.get(position).getTitle()) );
-        holder.titleView.setText(bookAttList.get(position).getTitle());
-        holder.authorsView.setText(bookAttList.get(position).getAuthor());
-
-        imageLoader.displayImage(bookAttList.get(position).getUrlString(),
-                holder.imageView, bookAttList.get(position).getTitle());
-
+        try{
+            textDrawable = new TextDrawable(bookAttList.get(position).getTitle());
+            holder.titleView.setText(bookAttList.get(position).getTitle());
+            holder.authorsView.setText(bookAttList.get(position).getAuthor());
+            imageLoader.displayImage(bookAttList.get(position).getUrlString(),
+            holder.imageView, bookAttList.get(position).getTitle());
+            holder.avgRatingView.setRating((float)(bookAttList.get(position).getAvgRating()));
+        }
+        catch (NullPointerException exception)
+        {
+            Log.d(TAG, exception.getMessage());
+        }
         return convertView;
     }
 
     static class ViewHolder{
         TextView titleView;
         TextView authorsView;
-        TextView avgRatingView;
+        RatingBar avgRatingView;
         ImageView imageView;
     }
-
-
 }

@@ -16,6 +16,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static java.lang.Math.ceil;
@@ -26,7 +27,7 @@ public class TextDrawable extends Drawable {
 
     String title;
     Paint paint;
-    int y_denom;
+    int lineNum;
     Rect bounds;
     private static final String TAG = "TextDrawables";
 
@@ -42,13 +43,14 @@ public class TextDrawable extends Drawable {
 //        paint.setTextAlign(Paint.Align.CENTER);
         paint.measureText(title);
         bounds = new Rect();
-        paint.getTextBounds("J", 0, 1, bounds);
+        paint.getTextBounds("Yj", 0, 1, bounds);
 
     }
 
     @Override
     public void draw(Canvas canvas) {
-        String[] title_words = adjustTitle(title, (canvas.getWidth() - 200));
+//        String[] title_words = adjustTitle(title, (canvas.getWidth() - 230));
+        ArrayList<String> title_words = adjustTitle(title, (canvas.getWidth() - 230));
         float[][] xyPos = calXYPos(title_words, canvas);
         int count = 0;
         for (String string: title_words)
@@ -59,50 +61,46 @@ public class TextDrawable extends Drawable {
         }
     }
 
-    private float[][] calXYPos(String[] title, Canvas canvas){
-        int width = canvas.getWidth() - 40;
-        int height = canvas.getHeight() - 20;
-        double offset = 1.3;
-        float xyPos[][] = new float[title.length][2];
+    private float[][] calXYPos(ArrayList<String> title, Canvas canvas){
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        double offset = 1.7;
+        float xyPos[][] = new float[title.size()][2];
 
-        int yPos = (height - y_denom * (int) ceil(bounds.height() * offset)) / 2;
+        int yPos = (height - lineNum * (int) ceil(bounds.height() * 1.3)) / 2;
         int count = 0;
         for (String string: title){
             if (string == null)
                 break;
-            yPos = yPos + (int) ceil(bounds.height() * offset); //offset y be its height as well, danke.
+            yPos = yPos + (int) ceil(bounds.height() * 1.3); //offset y be its height as well, danke.
             xyPos[count][0] = (int) (width - paint.measureText(string))/2; //x position
             xyPos[count++][1] = yPos;
-            Log.d("chipotle",  string + " YPos: " + yPos + "  y_denom: " + y_denom + " height: " + height);
         }
         return xyPos;
     }
 
-    private String[] adjustTitle(String title, int width){
+    private ArrayList<String>  adjustTitle(String title, int width){
         int length = (int) ceil(paint.measureText(title) / (width));
         String split_title[] = title.split(" ");
-        StringBuilder titleBuilder = new StringBuilder();
-        String title_array[] = new String[length];
-        int count = 0;
+
+        ArrayList<String> titleList = new ArrayList<>();
+
+        int index = 0;
+        titleList.add("");
         for(String string: split_title){
             if (string == null)
                 break;
-            titleBuilder.append(string + " ");
-            //not concatenating array whcih is an expensive operation.
-            title_array[count] = titleBuilder.toString();
-            if(width < (paint.measureText(title_array[count]))){
-                title_array[count] = titleBuilder.toString();
-                count++;
-                titleBuilder = new StringBuilder();
+            titleList.set(index, (titleList.get(index) + " " + string));
+            if(width < (paint.measureText(titleList.get(index)))){
+               titleList.add("");
+                index++;
             }
-
         }
-        if ((title_array[title_array.length - 1]) == null) //last string == null
-            y_denom = title_array.length; //divide length by number of strings + 1.
-        else
-            y_denom = title_array.length + 1;
 
-        return title_array;
+        lineNum = index;
+
+        Log.d("chipotle", "LineNum: " + lineNum);
+        return titleList;
     }
 
     @Override

@@ -167,10 +167,8 @@ public final class QueryUtils {
 
     public static ArrayList<BookAttributes> extractBooks(String jsonString){
         ArrayList<BookAttributes> bookList = new ArrayList<>();
-        Log.d(TAG, "extractBooks");
         try
         {
-            Log.d(TAG, "extractBooks1");
             //catch for null object reference!
             //convert string to a json object
             JSONObject bookListObject = new JSONObject(jsonString);
@@ -178,18 +176,12 @@ public final class QueryUtils {
             //we need an array list of an array list.
             JSONArray authorsArray;
 
-            //clear authors here.
-            Log.d(TAG, itemsArray.length() + "");
             for(int i = 0; i < itemsArray.length(); i++){
-                Log.d(TAG, "extractBooks2");
+
                 JSONObject volumeInfo = itemsArray.optJSONObject(i).optJSONObject("volumeInfo");
                 JSONObject accessInfo = itemsArray.getJSONObject(i).optJSONObject("accessInfo");
                 authorsArray = volumeInfo.optJSONArray("authors");
                 ArrayList<String> authors = new ArrayList<>();
-
-
-//                downloadImage(volumeInfo.optJSONObject("imageLinks").optString("thumbnail"));
-
                 try{
                     Log.d(TAG, "Thank you, next!");
 
@@ -201,7 +193,6 @@ public final class QueryUtils {
                     Log.d(TAG, "Internet not working");
                 }
 
-                Log.d(TAG, "GOT HERE");
                 bookList.add(new BookAttributes(
                         volumeInfo.optString("title"),
                         authors,
@@ -212,7 +203,6 @@ public final class QueryUtils {
                         accessInfo.optString("webReaderLink"),
                         volumeInfo.optJSONObject("imageLinks").optString("thumbnail")));
 
-                Log.d(TAG, "webreaderlink is this: " + accessInfo.optString("webReaderLink"));
             }
             return bookList;
         }

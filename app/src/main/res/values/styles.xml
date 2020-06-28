@@ -8,4 +8,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TitleTheme" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/brown</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="AuthorTheme" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/brown</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/lightBrown</item>
+        <item name="colorControlActivated">@color/darkBrown</item>
+    </style>
+
+    <style name="descView" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/darkBrown</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
