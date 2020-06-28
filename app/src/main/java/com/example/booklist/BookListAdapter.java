@@ -38,13 +38,20 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
 
     public BookListAdapter(Context context, List<BookAttributes> objects) {
         super(context, 0, objects);
-        this.context = context;
-        this.bookAttList = objects;
-        imageLoader = new ImageLoader(context);
+        try {
+            this.context = context;
+            this.bookAttList = objects;
+            imageLoader = new ImageLoader(context);
+
+        }
+        catch (Exception e){
+            Log.d(TAG, "I am really disappointed in you, Cady");
+        }
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) throws  NullPointerException{
+        try{
         pos = position;
         if(convertView == null || convertView.getTag() == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_adapter_view, parent, false);
@@ -60,8 +67,8 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
         else{
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.imageView.setTag(position);
-        try{
+
+            holder.imageView.setTag(position);
             textDrawable = new TextDrawable(bookAttList.get(position).getTitle());
             holder.titleView.setText(bookAttList.get(position).getTitle());
             holder.authorsView.setText(bookAttList.get(position).getAuthor());

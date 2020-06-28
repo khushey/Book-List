@@ -14,7 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -31,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         createUrl();//Async: listener
     }
 
@@ -40,15 +41,25 @@ public class MainActivity extends AppCompatActivity {
     {
         @NonNull
         @Override
-        public Loader onCreateLoader(int id, @Nullable Bundle args) {
-            bookLoader = new BookLoader(MainActivity.this, url);
-            return bookLoader;
+        public Loader onCreateLoader(int id, @Nullable Bundle args) throws NullPointerException {
+            try {
+                bookLoader = new BookLoader(MainActivity.this, url);
+                return bookLoader;
+            }
+            catch (NullPointerException exception){
+                return null;
+            }
         }
 
         @Override
-        public void onLoadFinished(@NonNull Loader<List<BookAttributes>> loader, final List<BookAttributes> data) {
+        public void onLoadFinished(@NonNull Loader<List<BookAttributes>> loader, final List<BookAttributes> data)
+                throws NullPointerException {
             //if the data is null, tell the user their query sucked adn they could please rephrase it.
-            try{
+                try
+                {
+                    if(data.size() == 0)
+                        Toast.makeText(MainActivity.this,
+                                "No output. Search something else!", Toast.LENGTH_SHORT).show();
                     ArrayAdapter arrayAdapter = new BookListAdapter(MainActivity.this, data);
                     ListView listView = (ListView) findViewById(R.id.listview);
                     listView.setAdapter(arrayAdapter);
@@ -62,14 +73,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     LoaderManager.getInstance(MainActivity.this).destroyLoader(BOOK_LOADER_ID);
+                }
+                catch (NullPointerException exception){
+                    Log.d(TAG, ""+exception.getCause() + "oh man");
+                    Toast.makeText(MainActivity.this,
+                            "No output. Search something else!", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
-            catch (NullPointerException exception){
-                Log.d(TAG, "NullPointer exception");
-            }
-        }
 
         @Override
         public void onLoaderReset(@NonNull Loader loader) {
+            Log.d(TAG, "I am curious");
         }
     };
 
@@ -77,25 +93,36 @@ public class MainActivity extends AppCompatActivity {
             //Load activity and get query text to build URL at onStartLoading() in the BookLoader
             //object.
             //The mToCreateUrl object implements an interface in BookLoader's onStartLoading
-            searchView = (SearchView) findViewById(R.id.search_view);
-            searchView.setOnQueryTextListener(queryTextListener);
+            try {
 
-        }
-
-    SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            url = QueryUtils.buildQuery(query);
-            if(url!=null){
-                searchView.clearFocus();
-                LoaderManager.getInstance(MainActivity.this)
-                        .initLoader(BOOK_LOADER_ID, null, loaderCallbacks).forceLoad();
-                return true; //true if the query has been handled by the listener.
+                searchView = (SearchView) findViewById(R.id.search_view);
+                searchView.setOnQueryTextListener(queryTextListener);
             }
-            return false;
+            catch (Exception e){
+                Log.d(TAG, "Why");
+
+            }
+
+        }
+
+    SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener()  {
+        @Override
+        public boolean onQueryTextChange(String newText) throws NullPointerException {
+            return true;
         }
         @Override
-        public boolean onQueryTextChange(String newText) {
+        public boolean onQueryTextSubmit(String query) throws NullPointerException {
+            try {
+                url = QueryUtils.buildQuery(query);
+                    searchView.clearFocus();
+                    LoaderManager.getInstance(MainActivity.this)
+                            .initLoader(BOOK_LOADER_ID, null, loaderCallbacks).forceLoad();
+                    return true; //true if the query has been handled by the listener.
+
+            }
+            catch (NullPointerException exception){
+                Log.d(TAG, "again");
+            }
             return false;
         }
     };

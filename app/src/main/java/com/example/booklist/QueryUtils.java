@@ -80,11 +80,19 @@ public final class QueryUtils {
 
 
     public static String getJsonResponse(URL url){
-        InputStream inputStream = null;
-        String jsonResponse;
-        inputStream = makeHttpRequest(url);
-        jsonResponse = readFromStream(inputStream);
-        return jsonResponse;
+        try{
+            InputStream inputStream = null;
+            String jsonResponse;
+            inputStream = makeHttpRequest(url);
+            jsonResponse = readFromStream(inputStream);
+            return jsonResponse;
+        }
+        catch (NullPointerException exception)
+        {
+            Log.d(TAG, exception.getMessage());
+            return null;
+        }
+
         }
 
     public static InputStream makeHttpRequest(URL url){
@@ -99,13 +107,16 @@ public final class QueryUtils {
                 connection.connect();
 
                 inputStream = connection.getInputStream();
-                Log.d(TAG, "inputstream =  " + inputStream);
                 return inputStream;
             }
             catch (IOException exception){
                 Log.d(TAG, "makeHTTPRequest: IOException" + exception.getMessage());
+                return  null;
             }
-            return  null;
+            catch (NullPointerException exception){
+                Log.d(TAG, "QueryUtils exception");
+                return  null;
+            }
         }
 
     private static String readFromStream(InputStream inputStream){
@@ -147,11 +158,6 @@ public final class QueryUtils {
 //            Bitmap bitmapImg = BitmapFactory.decodeStream(inputStream);
             Bitmap bitmapImg = BitmapFactory.decodeStream(fileInputStream);
 
-            Log.d("ImageLoader", "input stream: "+inputStream + "");
-            Log.d("ImageLoader", "1A: Done downloading");
-
-            if(bitmapImg == null)
-            Log.d("ImageLoader", "1B: Image is null" );
 
             return bitmapImg;
 
@@ -166,9 +172,9 @@ public final class QueryUtils {
     }
 
     public static ArrayList<BookAttributes> extractBooks(String jsonString){
-        ArrayList<BookAttributes> bookList = new ArrayList<>();
         try
         {
+            ArrayList<BookAttributes> bookList = new ArrayList<>();
             //catch for null object reference!
             //convert string to a json object
             JSONObject bookListObject = new JSONObject(jsonString);
@@ -183,14 +189,12 @@ public final class QueryUtils {
                 authorsArray = volumeInfo.optJSONArray("authors");
                 ArrayList<String> authors = new ArrayList<>();
                 try{
-                    Log.d(TAG, "Thank you, next!");
-
                     for (int j = 0; j < authorsArray.length(); j++){
                         authors.add(authorsArray.optString(j));
                     }
                 }
                 catch (NullPointerException exception){
-                    Log.d(TAG, "Internet not working");
+                    Log.d(TAG, exception.getMessage());
                 }
 
                 bookList.add(new BookAttributes(
@@ -207,12 +211,13 @@ public final class QueryUtils {
             return bookList;
         }
         catch (JSONException exception){
-
+            return null;
         }
         catch(NullPointerException exception){
             Log.d(TAG, "Null Pointer Exception");
+            return null;
         }
-        return null;
+
     }
 
 }
