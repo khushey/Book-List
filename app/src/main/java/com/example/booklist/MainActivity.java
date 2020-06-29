@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivityx";
     private URL url = null;
     private SearchView searchView;
+    private BookListAdapter arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     if(data.size() == 0)
                         Toast.makeText(MainActivity.this,
                                 "No output. Search something else!", Toast.LENGTH_SHORT).show();
-                    ArrayAdapter arrayAdapter = new BookListAdapter(MainActivity.this, data);
+                    arrayAdapter = new BookListAdapter(MainActivity.this, data);
                     ListView listView = (ListView) findViewById(R.id.listview);
                     listView.setAdapter(arrayAdapter);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -99,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 searchView.setOnQueryTextListener(queryTextListener);
             }
             catch (Exception e){
-                Log.d(TAG, "Why");
-
+                e.printStackTrace();
             }
 
         }
@@ -121,16 +121,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
             catch (NullPointerException exception){
-                Log.d(TAG, "again");
+                exception.printStackTrace();
             }
             return false;
         }
     };
 
+
     @Override
     protected void onStop() {
         super.onStop();
-        FileCache fileCache = new FileCache(this);
-        fileCache.clear();
+        arrayAdapter.imageLoader.clearCache();
     }
 }

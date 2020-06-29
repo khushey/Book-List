@@ -155,4 +155,10 @@ public class ImageLoader {
         }
     }
 
+    public void clearCache() {
+        //Clear cache directory downloaded images and stored data in maps
+        memoryCache.clear();
+        fileCache.clear();
+    }
+
 }

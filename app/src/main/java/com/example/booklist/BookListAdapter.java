@@ -32,7 +32,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
     private ViewHolder holder;
     private int pos;
     private TextDrawable textDrawable;
-    ImageLoader imageLoader;
+    public ImageLoader imageLoader;
     List<BookAttributes> bookAttList;
     Context context;
 
@@ -45,7 +45,7 @@ public class BookListAdapter extends ArrayAdapter<BookAttributes> {
 
         }
         catch (Exception e){
-            Log.d(TAG, "I am really disappointed in you, Cady");
+            e.printStackTrace();
         }
     }
 

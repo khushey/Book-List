@@ -51,6 +51,7 @@ public class MemoryCache {
             size-=getSizeInBytes(bitmap); //decrease its size
         cache.put(idURL, bitmap); //putting same key in LinkedHashMap deletes older key + value;  and puts this one at last
         size+=getSizeInBytes(bitmap);
+        checkSize();
     }
 
     private long getSizeInBytes(Bitmap bitmap){
@@ -61,14 +62,13 @@ public class MemoryCache {
     }
 
 
-    //CHANGED CODE. CHECK.
     private void checkSize(){
         Iterator<Map.Entry<String, Bitmap>> iterator =
                 cache.entrySet().iterator();
 
         while(size>limit)
         {
-            //delete the value that was first put in
+            //delete the value that was first put in (oldest value)
             //HashMap is FIFO.
             Map.Entry<String, Bitmap> mapEntry = iterator.next();
             size -= getSizeInBytes(mapEntry.getValue());

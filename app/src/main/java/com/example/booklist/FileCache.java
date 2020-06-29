@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 
+//create book list directory and files to write images on. These files are named using URL's hashcode.
 public class FileCache {
 
     //cache directory to store downloaded images
@@ -15,16 +16,19 @@ public class FileCache {
     private static final String TAG = "FileCache";
 
     public FileCache(Context context){
-        //Find the directory at SD Card to save cached images
+        //Find the directory to save cached images
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            //if SDCard is present on device and mounted
+            //External storage can be a removable storage media (such as an SD card) or an internal (non-removable) storage.
+            //MEDIA_MOUNTED: Storage state if the media is present and mounted at its mount point with read/write access
             cacheDir = new File(context.getExternalCacheDir(), "BookList");
+            //File (File parent, String child).
         }
         else{
             cacheDir = context.getCacheDir();
         }
+
         if(!cacheDir.exists()) {
-            //create cache in your application context
+            //create cache directory in your application context (when running for the first time).
             cacheDir.mkdirs();
         }
     }
@@ -36,7 +40,7 @@ public class FileCache {
 
         if(!file.exists()){
             try{
-                file.createNewFile();
+                file.createNewFile(); //new file named url's hashcode.
             }
             catch (IOException exception){
                 Log.d(TAG, exception.getMessage());
@@ -47,11 +51,9 @@ public class FileCache {
 
     public void clear(){
         File[] files = cacheDir.listFiles();
-        Log.d("MainActivityx", "In files");
         if(files == null)
             return;
         for(File f: files) {
-            Log.d("MainActivityx", "Deldeldel");
             f.delete();
         }
     }
